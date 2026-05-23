@@ -25,9 +25,12 @@ parámetro a través de todos los módulos cooperantes.
 
 ## Cómo jugar
 
+Requiere el [intérprete Zymbol](https://github.com/zymbol-lang/interpreter):
+
 ```bash
-cd interpreter
-zymbol run ../klingon_galaxy/hov_veS.zy
+git clone https://github.com/zymbol-lang/zyKlingonGalaxy
+cd zyKlingonGalaxy
+zymbol run hov_veS.zy
 ```
 
 Requiere una fuente compatible con pIqaD (CSUR PUA, U+F8D0–F8FF) para el

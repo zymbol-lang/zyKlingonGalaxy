@@ -23,9 +23,12 @@ threaded as a parameter through all cooperating modules.
 
 ## How to play
 
+Requires the [Zymbol interpreter](https://github.com/zymbol-lang/interpreter):
+
 ```bash
-cd interpreter
-zymbol run ../klingon_galaxy/hov_veS.zy
+git clone https://github.com/zymbol-lang/zyKlingonGalaxy
+cd zyKlingonGalaxy
+zymbol run hov_veS.zy
 ```
 
 Requires a pIqaD-compatible font (CSUR PUA, U+F8D0–F8FF) for Klingon script
