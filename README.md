@@ -1,0 +1,305 @@
+# Hov veS
+
+> **Revisado para v0.0.5 — 2026-05-19**
+
+Galaxian-style space shooter for the terminal, set in the Klingon universe.
+The IKS meQtaH (B'rel Bird-of-Prey) defends against Federation armada waves.
+
+Hov veS is the second real TUI game written in Zymbol, following Serpiente.
+It was built to validate a different set of language capabilities: multi-module
+state threading, formation drift and dive AI, a dual projectile system, wave
+progression with scaling difficulty, session-persistent statistics via
+hot-definition variables, and 3-language i18n (pIqaD / English / Spanish)
+threaded as a parameter through all cooperating modules.
+
+> **Validation project for Zymbol v0.0.5** — stress-tests multi-module
+> orchestration, Galaxian-style formation AI, delta rendering, entropy
+> management, and 3-language i18n (pIqaD / English / Spanish) across
+> 5 cooperating modules.
+
+> **Español:** [README_ES.md](README_ES.md)
+
+---
+
+## How to play
+
+```bash
+cd interpreter
+zymbol run ../klingon_galaxy/hov_veS.zy
+```
+
+Requires a pIqaD-compatible font (CSUR PUA, U+F8D0–F8FF) for Klingon script
+in the menus. A terminal of at least 40 × 20 characters is recommended.
+
+---
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| `←` / `A` | Move ship left |
+| `→` / `D` | Move ship right |
+| `Space` | Fire disruptor bolt (1 active, instant kill) |
+| `↑` | Rapid fire burst (4 bolts, 1 damage each) |
+| `↓` | Toggle shield (3 charges per life — absorbs enemy bolts) |
+| `P` | Pause / resume |
+| `Q` | Quit during a game |
+| `1`–`4` | Select difficulty directly in menu |
+| `↑` `↓` + `↵` | Navigate menus |
+
+---
+
+## Screens
+
+### Language selection
+
+The first screen after launch lets you choose the display language. It affects
+all menu text and HUD labels. Navigate with `↑`/`↓` or press `1`–`3`, then `↵`:
+
+```
+╭──────────────────────────────────╮
+│         [pIqaD title]            │
+│       [pIqaD subtitle]           │
+├──────────────────────────────────┤
+│   tlhIngan Hol / Language:       │
+│                                  │
+│   [1]  tlhIngan (pIqaD)          │
+│ ► [2]  English                   │
+│   [3]  Español                   │
+├──────────────────────────────────┤
+│  ↑↓ / 1-3 / ↵                   │
+╰──────────────────────────────────╯
+```
+
+`Q` falls back to pIqaD mode. The selected language persists for the entire
+session (all menus, wave-clear, game-over, and HUD labels).
+
+### Difficulty selection
+
+A centered menu appears at startup. Navigate with `↑` `↓` and confirm with `↵`
+(or press `1`–`4` directly):
+
+```
+╭────────────────────────────────╮
+│         H O V   V E S          │
+│       IKS  meQtaH              │
+│  B'rel Bird-of-Prey vs Armada  │
+├────────────────────────────────┤
+│   Select difficulty:           │
+│                                │
+│   [1]  petaQ    (easy)  120 ms │
+│ ► [2]  Hab SoSlI (med)   90 ms │
+│   [3]  Qapla'   (hard)   60 ms │
+│   [4]  Heghlu'  (death)  40 ms │
+├────────────────────────────────┤
+│  ↑↓ / 1-4 / ↵ to confirm      │
+│  Q = quit during game          │
+╰────────────────────────────────╯
+```
+
+### Gameplay
+
+The border frames the playfield and overlays the HUD: tribble lives on the left,
+score centered, wave number on the right. Enemies drift laterally and periodically
+break formation to dive toward the player.
+
+```
+╭──┤ yIH: ♦ ♦ · ├────┤ nob: 80 ├────┤ HoS: 2 ├──╮
+│                                                   │
+│    ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽               │
+│    ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼               │
+│    ◆  ◆  ◆  ◆  ◆  ◆  ◆  ◆  ◆  ◆               │
+│    ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼               │
+│    ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽  ▽               │
+│                                                   │
+│                 ▼                                 │
+│                 ·                                 │
+│                |                                  │
+│                                                   │
+│                 ▲                                 │
+╰───────────────────────────────────────────────────╯
+```
+
+**Enemy glyphs and point values:**
+
+| Glyph | Type | Points | Formation rows |
+|-------|------|--------|----------------|
+| `◆` | almirante | 50 | row 2 |
+| `▼` | capitan | 20 | rows 3–4 |
+| `▽` | soldado | 10 | rows 5–6 |
+
+Divers (enemies that break formation and fly toward the ship) award **2×** base
+points when destroyed mid-dive.
+
+### Wave clear
+
+After all enemies and active divers are destroyed, a brief overlay appears before
+the next wave:
+
+```
+╭───────────────────────────╮
+│      Q A P L A ' !        │
+│   Wave 2 cleared!         │
+│   Score: 180              │
+╰───────────────────────────╯
+```
+
+### Pause
+
+Press `P` during a game to show a centered pause panel. Press `P` again to resume.
+The board is fully redrawn on resume.
+
+### Game over
+
+When all three tribble lives are lost, a menu shows session statistics and offers
+to start a new game:
+
+```
+╭───────────────────────────╮
+│     H E G H L U ' !       │
+│   ( you have died )       │
+├───────────────────────────┤
+│  Score:   180             │
+│  Wave:    3               │
+│  Games:   2               │
+├───────────────────────────┤
+│► New game                 │
+│  Quit                     │
+╰───────────────────────────╯
+```
+
+**Games** played and cumulative score list persist across restarts within the
+same session, tracked via hot-definition variables scoped to the outer `>>|` block.
+
+---
+
+## Architecture
+
+```
+klingon_galaxy/
+├── hov_veS.zy      entry point — seed, dimensions, outer game loop, event dispatch
+├── Duj.zy          player ship — lateral movement with boundary clamping
+├── jagh.zy         enemy fleet — formation build, drift, dive attacks, LCG
+├── bach.zy         projectiles — player bolts, enemy bolts, hit detection, scoring
+├── HUD.zy          display — menus, border, delta rendering, overlays
+└── hallazgos_es.md bug/gap registry found during development (Spanish)
+```
+
+### Modules
+
+**`Duj.zy`** exports:
+- `bIng(Duj, AN)` — move ship one column left; clamps at column 2
+- `Dung(Duj, AN)` — move ship one column right; clamps at column `AN+1`
+
+**`jagh.zy`** exports:
+- `chen_ghom(AN, AL, HoS, mIS)` — build 5×10 formation for wave `HoS`;
+  returns `(ghom, mIS)`
+- `Suy_mIw(ghom, jaHDu, AN, AL, HoS, mIS)` — advance formation drift and active
+  divers; possibly launch a new dive; returns `(ghom, jaHDu, mIS, hubo_drift)`
+- `HoH_nob(jaHDu, Duj, Duj_fila)` — detect diver collision with player ship;
+  returns `#1`/`#0`
+- `naQ_ghom(ghom, jaHDu)` — returns `#1` when all enemies and divers are cleared
+
+**`bach.zy`** exports:
+- `tagh(mIwDu, fila, col)` — spawn a new bolt (disruptor or rapid)
+- `vIH_mIwDu(mIwDu, bachHaw, ghom, jaHDu, AL)` — advance disruptor bolts, resolve
+  instant-kill hits; returns `(mIwDu, bachHaw, nab, ghom, jaHDu, naQDu)`
+- `vIH_mIwDu_rap(mIwDu_rap, ghom, jaHDu, AL)` — advance rapid bolts, resolve
+  1-damage hits; returns `(mIwDu_rap, nab, ghom, jaHDu, naQDu_rap, naDanHa)`
+- `jagh_tagh(jagh_bachDu, ghom, jaHDu, mIS, HoS)` — possibly fire one enemy bolt
+  (probability scales with wave number); returns `(jagh_bachDu, mIS)`
+- `vIH_jagh_bachDu(jagh_bachDu, Duj, Duj_fila, AN, AL, escudo_activo, escudo_carga)` —
+  advance enemy bolts, detect player hit; shield absorbs if active (consumes 1 charge);
+  returns `(jagh_bachDu, HoH_Duj, escudo_activo, escudo_carga)`
+
+**`HUD.zy`** exports:
+- `sel_Hol(AN, AL)` — language selector (first screen); returns pIqaD digit
+  `𐦱` (pIqaD), `𐦲` (English), or `𐦳` (Español)
+- `menu_HeH(AN, AL, idioma)` — title screen + difficulty selector; returns ms/tick delay
+- `chen_bID(AN, AL)` — draw full border and clear playfield
+- `yIH_HUD(yIHmey, AN, AL, idioma)` — draw tribble lives in top border
+- `nob_HUD(nob, AN, idioma)` — draw score in top border
+- `HoS_label(HoS, AN, idioma)` — draw wave number in top border
+- `escudo_HUD(escudo_carga, escudo_activo, AN, idioma)` — draw shield charges in top border
+  (cyan label when active; `■` filled / `·` empty per charge)
+- `ghom_HUD(ghom, AN, AL)` — draw full enemy formation (initial render)
+- `Duj_HUD(Duj, Duj_fila, AN, escudo_activo)` — draw player ship (cyan when shielded)
+- `yot(AN, AL, idioma)` — pause overlay; blocks until `P`
+- `Hegh_mIS(Duj, Duj_fila, AN, AL)` — death flash animation (3 pulses)
+- `HoS_tugh(ola, nob, AN, AL, idioma)` — wave-clear overlay with 1.8 s pause
+- `Hegh_nav(nob, HoS, maQDu, nob_maQ, AN, AL, idioma)` — game-over menu; returns
+  `'n'` (new game) or `'s'` (quit)
+- `chou_bID(...)` — delta render: redraws only changed cells each tick
+
+### Data model
+
+All mutable state threads explicitly through function calls — no shared global
+state. The main data structures:
+
+| Variable | Type | Contents |
+|----------|------|----------|
+| `ghom` | 3-tuple | `(vel, ticks, enemigos)` — formation drift state |
+| `enemigos` | array of 4-tuples | `(fila, col, tipo, hp)` — living formation enemies |
+| `jaHDu` | array of 5-tuples | `(fila, col, tipo, vel_fila, vel_col)` — active divers |
+| `mIwDu` | array of 2-tuples | `(fila, col)` — player bolts in flight |
+| `jagh_bachDu` | array of 2-tuples | `(fila, col)` — enemy bolts in flight |
+
+### Delta rendering
+
+`chou_bID` does not clear the playfield on every tick. Only changed cells are
+redrawn:
+
+| Condition | Cells redrawn |
+|-----------|---------------|
+| `hubo_drift == #1` | Blank rows 2–6, redraw entire formation |
+| `hubo_drift == #0` | Erase only destroyed enemies from `naQDu`/`naQDu_rap` |
+| Always | Redraw glyph of `naDanHa` entries (damaged enemies still alive) |
+| Always | Erase old / draw new diver positions |
+| Always | Erase old / draw new disruptor bolt positions |
+| Always | Erase old / draw new rapid-fire bolt positions |
+| Always | Erase old / draw new enemy bolt positions |
+| `Duj_vieja <> Duj` | Erase old ship column, draw at new column |
+| Shield state change | Update ship color and shield-charge HUD label |
+
+### Randomness
+
+The initial seed `mIS` is derived at startup from three independent entropy
+sources via BashExec (`date +%N`, `$$`, `/dev/urandom`). All subsequent
+randomness uses an LCG in pure Zymbol — no BashExec per tick. The LCG uses the
+same constants as `serpiente/logica.zy`:
+`(1664525 × mIS + 1013904223) % 2147483647`.
+
+The seed is passed as an explicit argument and returned as part of every tuple
+that advances it.
+
+---
+
+## Zymbol v0.0.5 primitives used
+
+| Primitive | Use in Hov veS |
+|-----------|----------------|
+| `>>| { }` | TUI block — alternate screen, raw mode, hidden cursor |
+| `>>~ (r, c, bg, fg) > items` | 4-arg positioned output with explicit bg and fg colors (ANSI 256) |
+| `>>!` | Clear screen (menus, pause entry) |
+| `>>?` | Query real terminal size; polled every tick for resize detection |
+| `<<|? var` | Non-blocking key read (game loop) |
+| `<<| var` | Blocking key read (menus, pause, game over) |
+| `@~ ms` | Sleep (controls tick rate / difficulty) |
+| `°var` | Hot var scoped to `>>|` outer block — session game count |
+| `°var += n` / `°var $+ v` | Accumulate across games within a session |
+| `@:label >` | Continue to named outer loop (terminal resize → restart wave) |
+| `@:label!` | Break named loop (wave clear, death, quit) |
+
+---
+
+## Language findings
+
+During the development of Hov veS, two behaviors in Zymbol were identified and
+documented in [`hallazgos_es.md`](hallazgos_es.md) (Spanish). One was a design
+gap with a known workaround; the other was a genuine interpreter bug that was
+fixed.
+
+| ID | Type | Description | Status |
+|----|------|-------------|--------|
+| HLZ-001 | Gap | New variables assigned only inside `? cond { }` blocks not visible in the outer scope | Workaround: pre-declare with a default value, or extract logic to a helper function |
+| HLZ-002 | Bug | Module `:=` constants inaccessible when a private function calls another private function in the same module (intra-module call without `alias::` prefix) | **Fixed** in `interpreter/crates/zymbol-interpreter/src/functions_lambda.rs` |
