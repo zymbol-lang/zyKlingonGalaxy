@@ -222,10 +222,11 @@ implementada en [囲碁](../GO/).
   en el de fin de partida, con una fila que muestra el idioma actual. El marco se
   reconstruye con el ancho nuevo.
 - **Nota:** `Hol::tam` son dos funciones —una pura que calcula y otra sin retorno que
-  escribe— por el fallo del tree-walker HLZ-SRP-001 registrado en zy-Serpiente: una
-  función de módulo que escribe estado y además devuelve un valor pierde la
-  escritura. `mIw/Hol.zy` recorre el ciclo completo y comprueba que vuelve al primer
-  idioma.
+  escribe—. Fue el rodeo del fallo HLZ-SRP-001 del tree-walker, **corregido en el
+  intérprete el 2026-07-27**, y se mantiene porque aquel fallo era silencioso: con un
+  binario v0.0.8 sin el arreglo, la versión de una sola función deja el idioma
+  anterior sin dar error. `mIw/Hol.zy` recorre el ciclo completo y comprueba que
+  vuelve al primer idioma.
 
 ---
 
@@ -284,4 +285,5 @@ desde el runner.
   HOV-I18N-008 abierto (falta el README en klingon). El proyecto pasa de v0.0.5 a
   v0.0.8. `bash mIw/Hoch.sh` → `Hoch PASS`. Dos carencias del **lenguaje** salieron a
   la luz por el camino y están en [hallazgos_es.md](hallazgos_es.md): HLZ-KL-001
-  (la interpolación no admite identificadores en pIqaD).
+  (la interpolación no admitía identificadores en pIqaD), **corregido en el
+  intérprete el 2026-07-27**; los dos idiomas vuelven a usar interpolación.

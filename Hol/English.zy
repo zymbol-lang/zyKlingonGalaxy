@@ -60,20 +60,21 @@
     // interpolar; sigue formando parte del contrato porque el klingon
     // tiene que reescribir cada cifra en el PUA y quien llama no debe
     // tener que saber qué idioma está activo.
-    // La interpolación "{x}" no admite identificadores en pIqaD: el
-    // lexer exige que el nombre sea alfanumérico y los glifos del
-    // PUA son de categoría Co, no Lo. Los identificadores en kanji
-    // sí interpolan; los del PUA, no. Por eso aquí se usa $++ en vez
-    // de interpolación (hallazgos_es.md, HLZ-KL-001).
+    // Interpolación normal y corriente. Hasta v0.0.8 no se podía:
+    // "{x}" exigía que el nombre fuera alfanumérico, y los glifos del
+    // PUA son de categoría Co, así que los identificadores en pIqaD
+    // —válidos en cualquier otra posición— no interpolaban. Aquí se
+    // usaba $++. Corregido en el intérprete; ver hallazgos_es.md,
+    // HLZ-KL-001.
     //
-    // EN: "{x}" interpolation rejects pIqaD identifiers — the lexer
-    // requires an alphanumeric name and PUA glyphs are category Co,
-    // not Lo. Kanji identifiers interpolate; PUA ones do not. Hence
-    // $++ instead of interpolation.
-    () { <~ "" $++  }
+    // EN: Ordinary interpolation. It did not work until v0.0.8: "{x}"
+    // required an alphanumeric name and PUA glyphs are category Co, so
+    // pIqaD identifiers — valid in every other position — could not be
+    // interpolated. This used $++ instead. Fixed in the interpreter.
+    () { <~ "{}" }
 
     () {
         ?  == 1 { <~ "First wave cleared" }
-        <~ "Wave " $++  " cleared"
+        <~ "Wave {} cleared"
     }
 }

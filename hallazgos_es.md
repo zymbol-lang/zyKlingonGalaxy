@@ -223,7 +223,7 @@ El handler ahora cubre `Array`, `Tuple` y `String`. Para String, replica la sem�
 ## HLZ-KL-001 — La interpolación `"{x}"` no admite identificadores en pIqaD
 
 **Tipo:** Gap (asimetría entre identificadores válidos y la interpolación)
-**Estado:** Abierto — pendiente de validar con el autor del lenguaje
+**Estado:** **Corregido en el intérprete** (2026-07-27)
 **Encontrado en:** `Hol/English.zy` y `Hol/Español.zy`, al escribir `mI'(n)`
 
 ### Síntoma
@@ -263,7 +263,26 @@ Es decir: 囲碁 puede escribir `"{整}.5 points"` y Hov veS no puede escribir l
 mismo con sus propios identificadores. Un programa cuyos identificadores son
 válidos en todas partes menos en la interpolación.
 
-### Workaround aplicado
+### Solución aplicada (2026-07-27)
+
+`Lexer::is_ident_start` y `Lexer::is_ident_continue` pasan a ser públicas y son
+la definición única de qué es un identificador. El bucle de interpolación del
+lexer, la exploración de interpolación del análisis semántico y los tres
+ayudantes del analizador (LSP) delegan ahora en ellas.
+
+La misma regla estrecha estaba copiada en tres sitios, con tres síntomas: la
+interpolación fallaba, el aviso de «variable no usada» saltaba sobre nombres que
+el programa sí lee dentro de `"{ }"`, y el LSP no reconocía esos identificadores
+para hover ni autocompletado. Los tres desaparecen con el mismo cambio.
+
+Regresión: `tests/i18n/interp_identificadores.zy` en el repo del intérprete —
+interpola nombres en latino, kanji, hangul, cirílico, griego, devanagari, pIqaD
+(con el apóstrofo klingon incluido) y un emoji, en el nivel superior y dentro de
+una función de módulo. Falla con el binario anterior.
+
+`Hol/English.zy` y `Hol/Español.zy` vuelven a usar interpolación.
+
+### Workaround que se usaba antes
 
 `$++`, el constructor de strings, que sí acepta cualquier expresión:
 
@@ -276,17 +295,10 @@ Funciona, y en los dos motores. Pero obliga a que todo el código que mezcla
 texto y números en este proyecto use una sintaxis distinta de la que usa el
 resto del ecosistema, sin que haya ninguna razón de diseño para ello.
 
-### Propuesta
+### Regla práctica
 
-Admitir en la interpolación el mismo conjunto de caracteres que ya admite el
-lexer para un identificador, en lugar de un `is_alphanumeric()` aparte. Si se
-prefiere no abrir el PUA en general, bastaría con aceptar la categoría `Co`
-explícitamente.
-
-### Regla práctica mientras tanto
-
-> Si los identificadores de un programa están fuera de las categorías `L*`/`N*`
-> de Unicode, no se puede usar `"{x}"`: hay que componer con `$++`.
+> La interpolación acepta exactamente lo que el lexer acepta como identificador
+> en cualquier otra posición. Si un nombre es válido, se puede interpolar.
 
 ---
 

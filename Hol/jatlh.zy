@@ -59,16 +59,16 @@
     // menú de dificultad y el de fin de partida, para que el idioma
     // se pueda cambiar sin reiniciar.
     //
-    // Son dos funciones y no una por el fallo del tree-walker
-    // HLZ-SRP-001 (registrado en zy-Serpiente): una función de módulo
-    // que escribe estado **y** devuelve un valor con `<~` pierde la
-    // escritura en el motor por defecto. Una pura calcula, otra sin
-    // retorno escribe.
+    // Son dos funciones y no una: una pura calcula y otra sin retorno
+    // escribe. Empezó siendo el rodeo de HLZ-SRP-001 (registrado en
+    // zy-Serpiente) y se queda ahora que está corregido, porque aquel
+    // fallo era silencioso: con un binario v0.0.8 sin el arreglo la
+    // versión de una sola función no da error, deja el idioma anterior.
     //
     // EN: Advance to the next locale, wrapping around. Two functions
-    // rather than one because of tree-walker bug HLZ-SRP-001: a
-    // module function that both writes state and returns a value
-    // loses the write in the default engine.
+    // rather than one — a pure one computes, a void one writes. It
+    // started as the workaround for tree-walker bug HLZ-SRP-001 and
+    // stays now that it is fixed, because that failure was silent.
     _() {
          = ()
          = $#
