@@ -1,0 +1,120 @@
+// ============================================================
+// Hol/jatlh.zy — Hol jatlhwI' (el despachador de idioma)
+//
+// Toda cadena que ve el jugador pasa por aquí, y solo por aquí.
+// El idioma activo vive como estado del módulo: el estado se
+// comparte por ruta de archivo, así que cualquier módulo que
+// importe este ve la misma selección. Ninguna función de dibujo
+// lleva ya un parámetro de idioma — antes lo llevaban nueve de las
+// veinte de HUD.zy y se reenviaba desde diecisiete puntos de
+// hov_veS.zy (auditoria_i18n_es.md, HOV-I18N-001).
+//
+// Las claves están en tlhIngan Hol y escritas en pIqaD, que es el
+// idioma y la escritura en que está escrito el programa. Cada
+// clave lleva prefijo de dominio, así que ninguna puede coincidir
+// con su propia traducción al klingon; eso es lo que hace que la
+// comprobación «traducción == clave ⇒ falta» siga siendo decidible
+// también en el idioma base.
+//
+// Los códigos de idioma sí son ASCII: son ISO 639 ("tlh", "en",
+// "es"), un convenio internacional que no se traduce.
+//
+// EN: Hol/jatlh.zy — i18n dispatcher. Single entry point for every
+// user-visible string; the active locale is module state, shared
+// per file path, so no render function carries a language
+// parameter. Keys are Klingon written in pIqaD — the language and
+// script the program is written in — each with a domain prefix.
+// Locale codes stay ASCII (ISO 639).
+// ============================================================
+
+# .Hol_jatlh {
+
+    <# ./tlhIngan => 
+    <# ./English => 
+    <# ./Español => 
+
+    #> {
+        
+        
+        
+        
+        
+        
+        
+    }
+
+    _ = "tlh"
+
+    // ISO 639. tlhIngan Hol va primero porque el programa está
+    // escrito en klingon.
+    // EN: ISO 639 codes. Klingon leads because the program is
+    // written in it.
+    () { <~ ["tlh", "en", "es"] }
+
+    () { _ =  }
+    () { <~ _ }
+
+    () {
+        ?? _ {
+            "en" => { <~ ::() }
+            "es" => { <~ ::() }
+            _    => { <~ ::() }
+        }
+    }
+
+    // Un número, en la escritura del idioma activo. En klingon los
+    // dígitos se escriben en pIqaD (U+F8F0–F8F9); en inglés y en
+    // español, en ASCII. Es la razón por la que un número no se
+    // puede interpolar directamente en una cadena de interfaz.
+    //
+    // EN: A number in the active locale's script. Klingon writes
+    // its digits in pIqaD; English and Spanish in ASCII. This is
+    // why a number cannot simply be interpolated into a UI string.
+    () {
+        ?? _ {
+            "en" => { <~ ::() }
+            "es" => { <~ ::() }
+            _    => { <~ ::() }
+        }
+    }
+
+    // «Oleada N completada» — una frase con un número dentro, así
+    // que la compone cada idioma. El klingon pospone el número y
+    // usa el sufijo verbal; el español lo concuerda en femenino.
+    //
+    // EN: "Wave N cleared" — a sentence with a number in it, so
+    // each locale composes it.
+    () {
+        ?? _ {
+            "en" => { <~ ::() }
+            "es" => { <~ ::() }
+            _    => { <~ ::() }
+        }
+    }
+
+    // El catálogo maestro. Es el contrato que todo idioma tiene que
+    // cumplir, y mIw/Hol.zy lo recorre contra todos los idiomas
+    // registrados avisando de cualquier clave que caiga en el caso
+    // identidad.
+    //
+    // EN: The master catalogue — the contract every locale must
+    // satisfy, walked by mIw/Hol.zy.
+    () {
+        <~ [
+            ".", ".",
+
+            ".", ".", ".",
+            ".", ".", ".", ".",
+            ".", ".",
+
+            ".", ".", ".", ".",
+
+            ".", ".", ".",
+
+            ".", ".",
+
+            ".", ".", ".",
+            ".", ".", ".", "."
+        ]
+    }
+}

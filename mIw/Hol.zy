@@ -1,0 +1,111 @@
+// ============================================================
+// mIw/Hol.zy — la puerta de completitud de i18n
+//
+// Recorre el catálogo maestro contra todos los idiomas
+// registrados. Un idioma al que le falte una clave devuelve la
+// clave misma (el caso identidad de mu'), y eso es lo que hace la
+// comprobación decidible: las claves llevan prefijo de dominio, así
+// que ninguna coincide con su traducción — tampoco en klingon, que
+// es el idioma base.
+//
+//   zymbol run mIw/Hol.zy
+//   zymbol run --vm mIw/Hol.zy
+//
+// EN: mIw/Hol.zy — i18n completeness gate. Walks the master
+// catalogue against every registered locale; a missing key returns
+// itself. Keys carry a domain prefix, so no key equals its own
+// translation, not even in the base language.
+// ============================================================
+
+<# ../Hol/jatlh => 
+<# ../juv => 
+<# ../gho => 
+
+ = ::()
+ = ::()
+
+>> "Hov veS — i18n" ¶
+>> "keys: " ($#) "   locales: " ($#) ¶
+>> "" ¶
+
+ = 0
+
+@  :  {
+    ::()
+     = ::(".")
+     = 0
+
+    @  :  {
+        ? (::()) ==  {
+            ?  == 0 { >> "  ["  "] "  ¶ }
+            >> "      MISSING  "  ¶
+             =  + 1
+        }
+    }
+
+    ?  == 0 {
+        >> "  ["  "] " (::(, 10)) "  " ($#) "/" ($#) "  OK" ¶
+    } _ {
+        >> "      → "  " missing" ¶
+    }
+
+     =  + 
+}
+
+// Frases compuestas y números. Una búsqueda estática solo puede
+// faltar; un número mal escrito o una rama gramatical sin cubrir
+// están mal. El klingon escribe sus cifras en pIqaD, así que mI'
+// no es cosmética: es la diferencia entre «7» y el glifo del PUA.
+//
+// EN: Composed messages and numbers. A static lookup can only be
+// missing; a badly written number or an uncovered grammatical
+// branch is wrong. Klingon writes its digits in pIqaD, so mI' is
+// not cosmetic.
+>> "" ¶
+>> "composed" ¶
+@  :  {
+    ::()
+    >> "  ["  "] " (::(0)) " · " (::(7)) " · " (::(1234)) ¶
+    >> "        " (::(1)) ¶
+    >> "        " (::(12)) ¶
+}
+
+// Los marcos. La razón por la que este juego tenía 79 líneas de
+// dibujo duplicadas es que sus cajas eran literales de ancho fijo,
+// así que lo que hay que probar no es solo que el texto exista sino
+// que el marco siga cuadrando al cambiar de idioma.
+//
+// EN: The frames. This game had 79 duplicated draw lines because
+// its boxes were fixed-width literals, so what needs testing is not
+// only that the text exists but that the frame still squares up.
+>> "" ¶
+>> "frames" ¶
+ = 0
+@  :  {
+    ::()
+     = [
+        . $+ ::("."),
+        .,
+        ::("."),
+        ::_(1, ::("."), #0),
+        ::_(4, ::("."), #1)
+    ]
+     = ::(, 3)
+     = ::([1])
+    @  :  {
+        >> "  "  ¶
+        ? (::()) <>  {
+            >> "      RAGGED  " (::()) " ≠ "  ¶
+             =  + 1
+        }
+    }
+    >> "" ¶
+}
+
+::("tlh")
+
+?  == 0 &&  == 0 {
+    >> "PASS — every key resolves and every frame squares up" ¶
+} _ {
+    >> "FAIL — "  " missing, "  " ragged rows" ¶
+}

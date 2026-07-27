@@ -1,0 +1,118 @@
+// ============================================================
+// gho.zy — gho (aro, cerco): paneles que caben en cualquier idioma
+//
+// Un marco no se teclea: se mide. La versión anterior de HUD.zy
+// escribía cada fila de cada caja como un literal con el relleno
+// contado a mano, y una copia entera de la fila por idioma:
+//
+//   >>~ (v+7, c, 0, 15) > "│   [1]  petaQ            120 mS │"
+//   ? idioma == 2 { >>~ (...) > "│   [1]  petaQ    (easy)  120 ms │" }
+//   ? idioma == 3 { >>~ (...) > "│   [1]  petaQ    (fácil) 120 ms │" }
+//
+// Eran 79 líneas de dibujo condicionadas por idioma, y las cajas ya
+// no cuadraban: la fila klingon del menú de pausa medía 21 columnas
+// y la inglesa 22. Además la traducción estaba subordinada a la
+// aritmética de la caja — «difícil» se había abreviado a «difíc»
+// porque no cabía (auditoria_i18n_es.md, HOV-I18N-002 y 003).
+//
+// Aquí el contenido llega como lista de líneas ya traducidas, se
+// mide la más ancha con juv::'ar —columnas de terminal— y el marco
+// se construye alrededor.
+//
+// EN: gho.zy — "hoop": panels that fit in any language. A frame is
+// measured, not typed. Content arrives as a list of already
+// translated lines; the widest is measured in terminal columns and
+// the frame is built around it.
+// ============================================================
+
+# gho {
+
+    <# ./juv => 
+
+    #> { , , , , _ }
+
+    // Una línea igual a esta se vuelve una regla horizontal del
+    // ancho del marco. Glifo de control: no aparece en ningún texto
+    // de interfaz, así que no puede chocar con una traducción.
+    //
+    // EN: A line equal to this becomes a horizontal rule as wide as
+    // the frame. A control glyph, so it cannot collide with a
+    // translation.
+     := "␟"
+
+    // Prefijo que pide centrar la línea dentro del marco. Centrar
+    // hay que hacerlo aquí y no antes: el ancho no se conoce hasta
+    // haber medido todas las líneas.
+    //
+    // EN: Prefix asking for the line to be centred inside the frame.
+    // The width is not known until every line has been measured.
+     := "␝"
+
+    // La línea más ancha de una lista, en columnas de terminal.
+    // EN: Widest line of a list, in terminal columns.
+    () {
+         = 0
+        @  :  {
+            ?  <>  {
+                 = ::(())
+                ?  >  {  =  }
+            }
+        }
+        <~ 
+    }
+
+    // Quita el prefijo de centrado si lo lleva.
+    // EN: Strip the centring prefix if present.
+    () {
+        ? ($#) == 0 { <~  }
+        ? $[1..1] ==  { <~ $[2..] }
+        <~ 
+    }
+
+    // Enmarca una lista de líneas.  es el número de espacios
+    // entre el borde y el texto, a cada lado.
+    //
+    // EN: Frame a list of lines.  is the number of spaces
+    // between border and text, on each side.
+    (, ) {
+         = ()
+         = "─" $* ( +  * 2)
+         = " " $* 
+        _ = ["╭" $+  $+ "╮"]
+        @  :  {
+            ?  ==  {
+                _ = _ $+ ("├" $+  $+ "┤")
+            } _ {
+                 = ()
+                ?  <>  {
+                    _ = _ $+ ("│" $+  $+ ::(, ) $+  $+ "│")
+                } _ {
+                    _ = _ $+ ("│" $+  $+ ::(, ) $+  $+ "│")
+                }
+            }
+        }
+        _ = _ $+ ("╰" $+  $+ "╯")
+        <~ _
+    }
+
+    // Una entrada de menú con su marca de selección delante. La
+    // marca se pone ANTES de medir, para que el marco tenga sitio
+    // para ella en todos los idiomas y las filas no se muevan al
+    // mover el cursor.
+    //
+    // EN: A menu entry with its selection marker in front. The
+    // marker goes on BEFORE measuring, so the frame has room for it
+    // in every language and rows never shift when the cursor moves.
+    // El número entre corchetes es una TECLA, no una cantidad, así
+    // que se queda en ASCII también en klingon: el jugador pulsa
+    // «1», no el glifo pIqaD del uno.
+    //
+    // EN: The bracketed number is a KEY, not a quantity, so it stays
+    // ASCII even in Klingon — the player presses "1", not the pIqaD
+    // glyph for one.
+    _(, , ) {
+         = "  "
+        ?  {  = "► " }
+        <~  $++ "["  "]  " 
+    }
+}

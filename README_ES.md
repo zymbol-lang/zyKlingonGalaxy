@@ -1,6 +1,6 @@
 # Hov veS
 
-> **Revisado para v0.0.5 — 2026-05-19**
+> **Apunta a Zymbol v0.0.8** — revisado el 2026-07-26
 
 Juego de tipo Galaxian para la terminal, ambientado en el universo Klingon.
 El IKS meQtaH (B'rel Bird-of-Prey) defiende el Imperio contra oleadas de la
@@ -11,13 +11,25 @@ Se construyó para validar un conjunto diferente de capacidades del lenguaje:
 propagación de estado entre múltiples módulos, IA de formación al estilo Galaxian
 con deriva y ataques de buceo, sistema dual de proyectiles, progresión de oleadas
 con dificultad escalonada, estadísticas de sesión persistentes mediante variables
-hot-definition, e i18n de 3 idiomas (pIqaD / Inglés / Español) propagado como
-parámetro a través de todos los módulos cooperantes.
+hot-definition, e i18n de 3 idiomas (pIqaD / Inglés / Español).
+
+La i18n se escribió primero con el idioma propagado como parámetro por `HUD.zy`
+y `hov_veS.zy`, y cada cadena visible duplicada una vez por idioma dentro del
+render: 79 líneas de dibujo condicionadas. En v0.0.8 se rehízo alrededor de un
+despachador que guarda el idioma como estado de módulo, un catálogo de 27 claves
+con prefijo de dominio escritas en klingon y en pIqaD, y marcos que se miden en
+lugar de teclearse.
 
 > **Proyecto de validación de Zymbol v0.0.5** — pone a prueba la orquestación
-> multi-módulo, la IA de formación Galaxian, el delta rendering, la gestión de
-> entropía, e i18n de 3 idiomas (pIqaD / Inglés / Español) a través de
-> 5 módulos cooperantes.
+> multi-módulo, la IA de formación Galaxian, el delta rendering y la gestión de
+> entropía.
+>
+> **Revisitado para v0.0.8** — el idioma es ahora estado de módulo y no un
+> parámetro hilado por las llamadas de dibujo, cada panel se construye midiendo
+> su contenido con `std/term` en vez de con literales de ancho fijo, y una puerta
+> de completitud recorre 27 claves × 3 idiomas en los dos motores. Ver
+> [auditoria_i18n_es.md](auditoria_i18n_es.md) y la doctrina común en
+> [USERAPPI18N.md](https://github.com/zymbol-lang/interpreter/blob/main/USERAPPI18N.md).
 
 > **English:** [README.md](README.md)
 
@@ -25,7 +37,8 @@ parámetro a través de todos los módulos cooperantes.
 
 ## Cómo jugar
 
-Requiere el [intérprete Zymbol](https://github.com/zymbol-lang/interpreter):
+Requiere el [intérprete Zymbol](https://github.com/zymbol-lang/interpreter)
+**v0.0.8 o posterior** (la maquetación depende de `std/term`):
 
 ```bash
 git clone https://github.com/zymbol-lang/zyKlingonGalaxy
@@ -191,6 +204,17 @@ klingon_galaxy/
 ├── jagh.zy         flota enemiga — formación, deriva, ataques de buceo, LCG
 ├── bach.zy         proyectiles — bolts del jugador y enemigos, detección de impacto
 ├── HUD.zy          pantalla — menús, borde, delta rendering, overlays
+├── juv.zy          capa en klingon sobre std/term (medidas de columna)
+├── gho.zy          paneles construidos midiendo el contenido — sin anchos fijos
+├── Hol/
+│   ├── jatlh.zy    despachador de i18n — guarda el idioma como estado de módulo
+│   ├── tlhIngan.zy idioma klingon (base: de aquí salen las claves)
+│   ├── English.zy  idioma inglés
+│   └── Español.zy  idioma español
+├── mIw/
+│   ├── Hol.zy      puerta de completitud: claves × idiomas, cifras, marcos
+│   └── Hoch.sh     corre todas las suites en los dos motores
+├── auditoria_i18n_es.md  auditoría de i18n del proyecto
 └── hallazgos_es.md registro de bugs y gaps encontrados durante el desarrollo
 ```
 

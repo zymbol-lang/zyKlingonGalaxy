@@ -1,6 +1,6 @@
 # Hov veS
 
-> **Revisado para v0.0.5 — 2026-05-19**
+> **Targets Zymbol v0.0.8** — revised 2026-07-26
 
 Galaxian-style space shooter for the terminal, set in the Klingon universe.
 The IKS meQtaH (B'rel Bird-of-Prey) defends against Federation armada waves.
@@ -9,13 +9,24 @@ Hov veS is the second real TUI game written in Zymbol, following Serpiente.
 It was built to validate a different set of language capabilities: multi-module
 state threading, formation drift and dive AI, a dual projectile system, wave
 progression with scaling difficulty, session-persistent statistics via
-hot-definition variables, and 3-language i18n (pIqaD / English / Spanish)
-threaded as a parameter through all cooperating modules.
+hot-definition variables, and 3-language i18n (pIqaD / English / Spanish).
+
+The i18n was first written with the locale threaded as a parameter through
+`HUD.zy` and `hov_veS.zy`, with each visible string duplicated once per language
+inside the render — 79 conditioned draw lines. In v0.0.8 it was rebuilt around a
+dispatcher holding the locale as module state, a catalogue of 27 domain-prefixed
+keys written in Klingon in pIqaD, and frames measured rather than typed.
 
 > **Validation project for Zymbol v0.0.5** — stress-tests multi-module
-> orchestration, Galaxian-style formation AI, delta rendering, entropy
-> management, and 3-language i18n (pIqaD / English / Spanish) across
-> 5 cooperating modules.
+> orchestration, Galaxian-style formation AI, delta rendering and entropy
+> management.
+>
+> **Revisited for v0.0.8** — the i18n was rewritten. The locale is now module
+> state rather than a parameter threaded through the render calls, every panel
+> is built from measured content via `std/term` instead of fixed-width literals,
+> and a completeness gate walks 27 keys × 3 locales in both engines. See
+> [auditoria_i18n_es.md](auditoria_i18n_es.md) and the project-wide doctrine in
+> [USERAPPI18N.md](https://github.com/zymbol-lang/interpreter/blob/main/USERAPPI18N.md).
 
 > **Español:** [README_ES.md](README_ES.md)
 
@@ -23,7 +34,8 @@ threaded as a parameter through all cooperating modules.
 
 ## How to play
 
-Requires the [Zymbol interpreter](https://github.com/zymbol-lang/interpreter):
+Requires the [Zymbol interpreter](https://github.com/zymbol-lang/interpreter)
+**v0.0.8 or later** (the layout depends on `std/term`):
 
 ```bash
 git clone https://github.com/zymbol-lang/zyKlingonGalaxy
@@ -185,6 +197,17 @@ klingon_galaxy/
 ├── jagh.zy         enemy fleet — formation build, drift, dive attacks, LCG
 ├── bach.zy         projectiles — player bolts, enemy bolts, hit detection, scoring
 ├── HUD.zy          display — menus, border, delta rendering, overlays
+├── juv.zy          Klingon layer over std/term (column metrics)
+├── gho.zy          panels built from measured content — no fixed widths
+├── Hol/
+│   ├── jatlh.zy    i18n dispatcher — holds the locale as module state
+│   ├── tlhIngan.zy Klingon locale (base language, where the keys come from)
+│   ├── English.zy  English locale
+│   └── Español.zy  Spanish locale
+├── mIw/
+│   ├── Hol.zy      completeness gate: keys × locales, numerals, frames
+│   └── Hoch.sh     runs every suite in both engines
+├── auditoria_i18n_es.md  i18n audit of the project (Spanish)
 └── hallazgos_es.md bug/gap registry found during development (Spanish)
 ```
 

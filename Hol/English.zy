@@ -1,0 +1,79 @@
+// ============================================================
+// Hol/English.zy — English locale (en)
+// Interface contract: mu' · mI' · Qaw'mu'
+// The keys are Klingon written in pIqaD; the base lives in
+// Hol/tlhIngan.zy.
+//
+// ES: Hol/English.zy — idioma inglés (en). Las claves están en
+// klingon escrito en pIqaD; la base está en Hol/tlhIngan.zy.
+// ============================================================
+
+# .Hol_English {
+
+    #> { , ,  }
+
+    () {
+        <~ ??  {
+            "."    => "English"
+            "."     => "Language"
+
+            "."     => "IKS meQtaH"
+            "."     => "B'rel Bird-of-Prey vs Armada"
+            "."     => "Select difficulty"
+            "."     => "petaQ (easy)"
+            "."    => "Hab SoSlI' (medium)"
+            "."     => "Qapla' (hard)"
+            "."     => "Heghlu' (death)"
+            "."     => "↑↓ / 1-4 / ↵ to confirm"
+            "."     => "Q = quit during game"
+
+            "."     => "Lives"
+            "."  => "Shield"
+            "."     => "Score"
+            "."     => "Wave"
+
+            "."    => "PAUSED"
+            "."     => "game paused"
+            "."     => "resume"
+
+            "."   => "Qapla'!"
+            "."    => "Score"
+
+            "."   => "Heghlu'!"
+            "."    => "you have died"
+            "."    => "Score"
+            "."    => "Wave"
+            "."    => "Games"
+            "."   => "New game"
+            "."    => "Quit"
+
+            _                => 
+        }
+    }
+
+    // English writes its digits in ASCII, so here interpolation is
+    // enough — but this is still part of the contract, because the
+    // Klingon locale has to rewrite every digit into the PUA and the
+    // caller must not have to know which locale is active.
+    //
+    // ES: el inglés escribe sus cifras en ASCII, así que aquí basta
+    // interpolar; sigue formando parte del contrato porque el klingon
+    // tiene que reescribir cada cifra en el PUA y quien llama no debe
+    // tener que saber qué idioma está activo.
+    // La interpolación "{x}" no admite identificadores en pIqaD: el
+    // lexer exige que el nombre sea alfanumérico y los glifos del
+    // PUA son de categoría Co, no Lo. Los identificadores en kanji
+    // sí interpolan; los del PUA, no. Por eso aquí se usa $++ en vez
+    // de interpolación (hallazgos_es.md, HLZ-KL-001).
+    //
+    // EN: "{x}" interpolation rejects pIqaD identifiers — the lexer
+    // requires an alphanumeric name and PUA glyphs are category Co,
+    // not Lo. Kanji identifiers interpolate; PUA ones do not. Hence
+    // $++ instead of interpolation.
+    () { <~ "" $++  }
+
+    () {
+        ?  == 1 { <~ "First wave cleared" }
+        <~ "Wave " $++  " cleared"
+    }
+}

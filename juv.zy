@@ -1,0 +1,33 @@
+// ============================================================
+// juv.zy — juv (medir): medidas de texto para una terminal
+// multiidioma
+//
+// El ancho de una cadena en la terminal no es su número de
+// grafemas. Aquí importa doblemente: el pIqaD vive en el PUA
+// (U+F8D0–F8FF) y su ancho depende de la fuente instalada, así que
+// el supuesto de «un carácter = una columna» no era fiable ni
+// siquiera en el idioma base.
+//
+// Capa fina en klingon sobre std/term: el juego habla klingon y la
+// biblioteca estándar habla inglés. Es el mecanismo de i18n de
+// código de interpreter/I18N.md aplicado a std/, y no cuesta nada
+// en ejecución.
+//
+// EN: juv.zy — "measure": text metrics for a multilingual TUI. A
+// thin Klingon layer over std/term. Column count is not grapheme
+// count, and pIqaD lives in the PUA, where the "one char, one
+// column" assumption was never safe to begin with.
+// ============================================================
+
+# juv {
+
+    #> {
+        ::width      => 
+        ::pad_left   => 
+        ::pad_right  => 
+        ::center     => 
+        ::truncate   => 
+    }
+
+    <# std/term => 
+}

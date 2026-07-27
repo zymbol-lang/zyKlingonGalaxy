@@ -220,7 +220,81 @@ El handler ahora cubre `Array`, `Tuple` y `String`. Para String, replica la sem�
 
 ---
 
+## HLZ-KL-001 — La interpolación `"{x}"` no admite identificadores en pIqaD
+
+**Tipo:** Gap (asimetría entre identificadores válidos y la interpolación)
+**Estado:** Abierto — pendiente de validar con el autor del lenguaje
+**Encontrado en:** `Hol/English.zy` y `Hol/Español.zy`, al escribir `mI'(n)`
+
+### Síntoma
+
+```
+error: invalid character in string interpolation
+  --> Hol/English.zy:73:31
+  = help: interpolation must be {identifier} — use \{ for a literal brace
+```
+
+### Contexto
+
+Un identificador escrito en pIqaD es perfectamente válido en cualquier otra
+posición —este programa entero está escrito así— pero deja de serlo dentro de
+`{ }`:
+
+```zymbol
+# prueba {
+    #> { f }
+    f(⟨mIwI en pIqaD⟩) { <~ "{⟨mIwI en pIqaD⟩}" }   // ✗ invalid character
+}
+```
+
+### Investigación
+
+No es cosa del pIqaD como escritura, sino de la categoría Unicode. El lexer de
+interpolación exige que el nombre sea alfanumérico, y los glifos pIqaD viven en
+el Área de Uso Privado:
+
+| Carácter | Punto de código | Categoría | `isalnum()` | ¿Interpola? |
+|---|---|---|---|---|
+| `整` (kanji) | U+6574 | `Lo` | sí | **sí** |
+| ⟨m en pIqaD⟩ | U+F8DA | `Co` | no | **no** |
+| ⟨I en pIqaD⟩ | U+F8D7 | `Co` | no | **no** |
+
+Es decir: 囲碁 puede escribir `"{整}.5 points"` y Hov veS no puede escribir lo
+mismo con sus propios identificadores. Un programa cuyos identificadores son
+válidos en todas partes menos en la interpolación.
+
+### Workaround aplicado
+
+`$++`, el constructor de strings, que sí acepta cualquier expresión:
+
+```zymbol
+⟨mI'⟩(⟨mI'wI'⟩) { <~ "" $++ ⟨mI'wI'⟩ }
+⟨Qaw'mu'⟩(⟨HoS⟩) { <~ "Wave " $++ ⟨HoS⟩ " cleared" }
+```
+
+Funciona, y en los dos motores. Pero obliga a que todo el código que mezcla
+texto y números en este proyecto use una sintaxis distinta de la que usa el
+resto del ecosistema, sin que haya ninguna razón de diseño para ello.
+
+### Propuesta
+
+Admitir en la interpolación el mismo conjunto de caracteres que ya admite el
+lexer para un identificador, en lugar de un `is_alphanumeric()` aparte. Si se
+prefiere no abrir el PUA en general, bastaría con aceptar la categoría `Co`
+explícitamente.
+
+### Regla práctica mientras tanto
+
+> Si los identificadores de un programa están fuera de las categorías `L*`/`N*`
+> de Unicode, no se puede usar `"{x}"`: hay que componer con `$++`.
+
+---
+
 ## Notas generales
 
 - El mensaje `'X' is undefined — did you mean 'X°' (hot definition)?` es un falso positivo cuando `X` es una constante de módulo llamada desde una función privada: el runtime no la encontraba en el scope y sugería erróneamente hot-var. Resuelto con el fix de HLZ-002.
+- HLZ-KL-001 salió a la luz al reescribir la i18n del proyecto (ver
+  [auditoria_i18n_es.md](auditoria_i18n_es.md)). No es un fallo de esa reescritura:
+  el código anterior nunca interpolaba porque convertía los números a mano, cifra a
+  cifra, con `_n_pIq`.
 - HLZ-001 y HLZ-002 comparten la fuente: cada función obtiene un scope completamente fresco (`take_call_state`). HLZ-001 es correcto por diseño (scope de bloque `? {}`). HLZ-002 era un bug de inyección faltante en llamadas intra-módulo, ya corregido en el intérprete.

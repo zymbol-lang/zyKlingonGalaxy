@@ -1,0 +1,89 @@
+// ============================================================
+// Hol/Español.zy — idioma español (es)
+// Contrato: mu' · mI' · Qaw'mu'
+// Las claves están en klingon escrito en pIqaD; la base está en
+// Hol/tlhIngan.zy.
+//
+// EN: Hol/Español.zy — Spanish locale (es). The keys are Klingon
+// written in pIqaD; the base lives in Hol/tlhIngan.zy.
+//
+// Los nombres klingon de las dificultades no se traducen: petaQ y
+// Qapla' son insultos y saludos, no niveles. Lo que sí se traduce
+// es la glosa entre paréntesis. Y esta vez la glosa cabe entera —
+// «difícil» estaba abreviada a «difíc» porque la caja de ancho fijo
+// no daba más de sí (auditoria_i18n_es.md, HOV-I18N-003).
+//
+// EN: The Klingon difficulty names are not translated — petaQ and
+// Qapla' are an insult and a salute, not levels. What is translated
+// is the gloss in brackets, and this time the gloss fits: "difícil"
+// used to be cut down to "difíc" because the fixed-width box had no
+// room for it.
+// ============================================================
+
+# .Hol_Español {
+
+    #> { , ,  }
+
+    () {
+        <~ ??  {
+            "."    => "Español"
+            "."     => "Idioma"
+
+            "."     => "IKS meQtaH"
+            "."     => "B'rel Ave de Presa contra la Armada"
+            "."     => "Elige dificultad"
+            "."     => "petaQ (fácil)"
+            "."    => "Hab SoSlI' (media)"
+            "."     => "Qapla' (difícil)"
+            "."     => "Heghlu' (muerte)"
+            "."     => "↑↓ / 1-4 / ↵ confirmar"
+            "."     => "Q = salir durante la partida"
+
+            "."     => "Vidas"
+            "."  => "Escudo"
+            "."     => "Puntos"
+            "."     => "Oleada"
+
+            "."    => "PAUSA"
+            "."     => "juego pausado"
+            "."     => "continuar"
+
+            "."   => "¡Qapla'!"
+            "."    => "Puntos"
+
+            "."   => "¡Heghlu'!"
+            "."    => "has muerto"
+            "."    => "Puntos"
+            "."    => "Oleada"
+            "."    => "Partidas"
+            "."   => "Nueva partida"
+            "."    => "Salir"
+
+            _                => 
+        }
+    }
+
+    // La interpolación "{x}" no admite identificadores en pIqaD: el
+    // lexer exige que el nombre sea alfanumérico y los glifos del
+    // PUA son de categoría Co, no Lo. Los identificadores en kanji
+    // sí interpolan; los del PUA, no. Por eso aquí se usa $++ en vez
+    // de interpolación (hallazgos_es.md, HLZ-KL-001).
+    //
+    // EN: "{x}" interpolation rejects pIqaD identifiers — the lexer
+    // requires an alphanumeric name and PUA glyphs are category Co,
+    // not Lo. Kanji identifiers interpolate; PUA ones do not. Hence
+    // $++ instead of interpolation.
+    () { <~ "" $++  }
+
+    // El español concuerda en femenino con «oleada» y tiene forma
+    // propia para la primera. Es la clase de cosa que una tabla
+    // estática no puede producir.
+    //
+    // EN: Spanish agrees in the feminine with "oleada" and has its
+    // own form for the first one — the kind of thing a static table
+    // cannot produce.
+    () {
+        ?  == 1 { <~ "Primera oleada completada" }
+        <~ "Oleada " $++  " completada"
+    }
+}
