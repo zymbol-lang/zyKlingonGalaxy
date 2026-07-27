@@ -59,7 +59,7 @@ tipo = _tipo_fila(fila)   // asignación incondicional → visible en scope exte
 
 **Tipo:** Bug — scope incorrecto en llamadas intra-módulo
 **Estado:** Fix aplicado en el intérprete (`functions_lambda.rs`)
-**Encontrado en:** `klingon/HUD.zy`
+**Encontrado en:** `klingon/HuD.zy`
 
 ### Síntoma
 
@@ -114,9 +114,9 @@ if let Some(ref origin_path) = func_def.origin_module_path {
 
 `func_def.origin_module_path` apunta al archivo donde se declaró la función. Para módulos importados ese path está en `loaded_modules`; para el script principal no está (inyección saltada automáticamente).
 
-### Estado de HUD.zy
+### Estado de HuD.zy
 
-Las constantes numéricas en `HUD.zy` se dejaron como literales por robustez y claridad (el fix del intérprete permite usar `:=` pero la paleta ya está documentada en el comentario de cabecera).
+Las constantes numéricas en `HuD.zy` se dejaron como literales por robustez y claridad (el fix del intérprete permite usar `:=` pero la paleta ya está documentada en el comentario de cabecera).
 
 | Tipo de llamada | Antes del fix | Después del fix |
 |----------------|---------------|-----------------|
@@ -134,7 +134,7 @@ Las constantes numéricas en `HUD.zy` se dejaron como literales por robustez y c
 
 **Tipo:** Bug — gap de cobertura en el VM (no afecta al tree-walker)
 **Estado:** Fix aplicado en el VM (`zymbol-vm/src/lib.rs`)
-**Encontrado en:** `klingon/HUD.zy` — función privada `__()` (`int_to_piqad`)
+**Encontrado en:** `klingon/HuD.zy` — función privada `__()` (`int_to_piqad`)
 
 ### Síntoma
 
@@ -146,7 +146,7 @@ Solo se manifiesta con `zymbol run --vm`. El tree-walker ejecuta el mismo códig
 
 ### Contexto
 
-La función `__()` en `HUD.zy` convierte un entero a una cadena de dígitos pIqaD construyendo la cadena de derecha a izquierda:
+La función `__()` en `HuD.zy` convierte un entero a una cadena de dígitos pIqaD construyendo la cadena de derecha a izquierda:
 
 ```zymbol
 __( n ) {

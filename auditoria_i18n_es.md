@@ -14,24 +14,26 @@ implementada en [囲碁](../GO/).
 
 | ID | Tipo | Descripción | Estado |
 |----|------|-------------|--------|
-| [HOV-I18N-001](#hov-i18n-001--el-idioma-es-un-parámetro-no-estado-de-módulo) | Arquitectura | 9 de las 20 funciones de `HUD.zy` cargan un parámetro de idioma que no es del dominio del juego | **Corregido** |
+| [HOV-I18N-001](#hov-i18n-001--el-idioma-es-un-parámetro-no-estado-de-módulo) | Arquitectura | 9 de las 20 funciones de `HuD.zy` cargan un parámetro de idioma que no es del dominio del juego | **Corregido** |
 | [HOV-I18N-002](#hov-i18n-002--no-hay-tabla-de-traducción-hay-79-líneas-de-dibujo-duplicadas) | Bloqueante | Cada cadena visible es un `>>~` repetido por idioma dentro del render | **Corregido** |
 | [HOV-I18N-003](#hov-i18n-003--los-marcos-son-de-ancho-fijo-y-el-español-ya-viene-recortado) | Bloqueante | El relleno está tecleado; `(difícil)` ya se abrevió a `(difíc)` para caber | **Corregido** |
 | [HOV-I18N-004](#hov-i18n-004--no-hay-gate-de-completitud) | Carencia | Nada verifica que las tres traducciones existan | **Corregido** |
 | [HOV-I18N-005](#hov-i18n-005--los-readme-y-designmd-de-囲碁-describen-mal-el-mecanismo) | Doc | «threaded through all cooperating modules» / «through five modules» — son dos, no cinco | **Corregido** |
-| [HOV-I18N-006](#hov-i18n-006--el-nombre-de-módulo-va-en-pIqaD-y-el-archivo-romanizado) | Convención | `HUD.zy`, `Duj.zy` y `jagh.zy` declaran su módulo en pIqaD: E001 en los tres | Abierto |
+| [HOV-I18N-006](#hov-i18n-006--el-nombre-de-módulo-va-en-pIqaD-y-el-archivo-romanizado) | Convención | `HUD.zy`, `Duj.zy`, `jagh.zy` y `bach.zy` declaran su módulo en pIqaD: E001 en los cuatro | **Corregido** |
+| [HOV-I18N-007](#hov-i18n-007--el-idioma-solo-se-elegía-en-la-primera-pantalla) | Cobertura | `Sel_Hol` se ve una vez por sesión; después no había forma de cambiar | **Corregido** |
+| [HOV-I18N-008](#hov-i18n-008--no-hay-readme-en-tlhingan-hol) | Documentación | El juego habla tres idiomas; su documentación, dos | Abierto |
 
 ---
 
 ## HOV-I18N-001 · El idioma es un parámetro, no estado de módulo
 
-- **Archivos:** `HUD.zy`, `hov_veS.zy`
+- **Archivos:** `HuD.zy`, `hov_veS.zy`
 - **Descripción:** la variable de idioma —escrita en pIqaD, se romaniza como
   `idioma` (U+F8D7 F8D3 F8D7 F8DD F8DA F8D0)— se obtiene del menú inicial y se pasa
   a mano a cada llamada de dibujo:
 
   ```
-  HUD.zy       491 líneas   20 funciones   9 con el parámetro de idioma   76 apariciones
+  HuD.zy       491 líneas   20 funciones   9 con el parámetro de idioma   76 apariciones
   hov_veS.zy   218 líneas    0 funciones   —                              17 apariciones
   Duj.zy        20 líneas    2 funciones   0
   jagh.zy      202 líneas   11 funciones   0
@@ -47,8 +49,8 @@ implementada en [囲碁](../GO/).
   `対局.zy` ven la misma selección sin que nadie pase un argumento. Aquí, añadir una
   pantalla nueva significa acordarse de hilar el idioma hasta ella.
 - **Opción:** despachador con estado de módulo y eliminación del parámetro de las
-  nueve firmas de `HUD.zy` y de los diecisiete sitios de `hov_veS.zy`. Es el cambio
-  más invasivo de los cinco, porque toca la API pública de `HUD.zy`.
+  nueve firmas de `HuD.zy` y de los diecisiete sitios de `hov_veS.zy`. Es el cambio
+  más invasivo de los cinco, porque toca la API pública de `HuD.zy`.
 - **Solución aplicada (2026-07-26):** `Hol/jatlh.zy` guarda el idioma como estado de
   módulo. El parámetro desapareció de las nueve firmas y de los diecisiete sitios:
   **cero apariciones** en los cinco archivos. `HUD::Sel_Hol` ya no devuelve un número
@@ -59,7 +61,7 @@ implementada en [囲碁](../GO/).
 
 ## HOV-I18N-002 · No hay tabla de traducción: hay 79 líneas de dibujo duplicadas
 
-- **Archivo:** `HUD.zy` (79 líneas `>>~` condicionadas por idioma; L81–L128 son el
+- **Archivo:** `HuD.zy` (79 líneas `>>~` condicionadas por idioma; L81–L128 son el
   menú)
 - **Descripción:** el patrón es dibujar primero la fila en pIqaD y luego
   sobrescribirla si el idioma es otro:
@@ -95,7 +97,7 @@ implementada en [囲碁](../GO/).
 
 ## HOV-I18N-003 · Los marcos son de ancho fijo, y el español ya viene recortado
 
-- **Archivo:** `HUD.zy` L96–L128
+- **Archivo:** `HuD.zy` L96–L128
 - **Descripción:** cada fila del marco es un literal con el relleno contado a mano
   para 32 columnas:
 
@@ -158,7 +160,7 @@ implementada en [囲碁](../GO/).
 
   > *«Hov veS, which threaded language as a parameter through five modules»*
 
-  La medición dice otra cosa: el parámetro solo llega a **dos** archivos, `HUD.zy`
+  La medición dice otra cosa: el parámetro solo llega a **dos** archivos, `HuD.zy`
   y `hov_veS.zy`. `Duj.zy`, `jagh.zy` y `bach.zy` no lo mencionan ni una vez —
   ninguno de los tres dibuja texto.
 
@@ -175,7 +177,7 @@ implementada en [囲碁](../GO/).
 
 ## HOV-I18N-006 · El nombre de módulo va en pIqaD y el archivo, romanizado
 
-- **Archivos:** `HUD.zy`, `Duj.zy`, `jagh.zy`
+- **Archivos:** `HuD.zy`, `Duj.zy`, `jagh.zy`
 - **Descripción:** los tres declaran su módulo con identificadores en pIqaD
   (`# ⟨HuD⟩`) mientras que sus archivos se llaman en klingon romanizado. `zymbol
   check` exige que el nombre del módulo coincida exactamente con el del archivo, así
@@ -189,13 +191,56 @@ implementada en [囲碁](../GO/).
   mismo error — y no afecta a la ejecución: los importadores usan la ruta, no el
   nombre declarado. `zymbol check hov_veS.zy` pasa limpio porque solo valida el
   archivo de entrada.
-- **Por qué no se ha tocado:** no tiene arreglo bueno. O se renombran los archivos a
-  pIqaD (y se rompen el README, la URL del repo y la posibilidad de teclearlos), o se
-  ponen nombres de módulo en alfabeto latino dentro de un programa cuyo criterio es
-  no tenerlos. Los módulos nuevos de este trabajo (`Hol/jatlh.zy`, `juv.zy`,
-  `gho.zy`) sí declaran nombres que coinciden con su ruta, así que no añaden E001.
-- **Opción:** queda a la espera de decisión — implementar / desestimar.
-  `mIw/Hoch.sh` lo cuenta aparte para que no enmascare un fallo de verdad.
+- **Las dos salidas posibles:** o se renombran los archivos a pIqaD, o la
+  declaración de módulo se escribe en la misma transcripción que la ruta. La primera
+  rompe el README, la URL del repo y la posibilidad de teclear un nombre de archivo.
+- **Solución aplicada (2026-07-26):** la segunda, por decisión del autor — **los
+  nombres de archivo se quedan en tlhIngan Hol**. La declaración de módulo no es un
+  identificador del programa: es el testigo que el intérprete compara con la ruta,
+  así que va en la misma transcripción que la ruta. Los cuatro archivos declaran
+  ahora `# HuD`, `# Duj`, `# jagh` y `# bach` — las mismas palabras klingon que ya
+  llevaban, en el mismo alfabeto que sus nombres de archivo. Nada dentro del
+  programa cambió de escritura: los identificadores siguen en pIqaD.
+
+  De paso, `HUD.zy` pasó a llamarse **`HuD.zy`**. `HUD` en mayúsculas era el
+  acrónimo inglés; `HuD` es la palabra klingon, y en klingon las mayúsculas son
+  ortografía, no estilo — `H` y `h`, `D` y `d`, `Q` y `q` son letras distintas. El
+  nombre de archivo dice ahora lo que dice la cabecera del propio archivo.
+
+  Los cuatro pasan `zymbol check` sin errores, y `mIw/Hoch.sh` ya no necesita contar
+  nada aparte.
+
+---
+
+## HOV-I18N-007 · El idioma solo se elegía en la primera pantalla
+
+- **Archivos:** `HuD.zy`, `Hol/jatlh.zy`
+- **Descripción:** `Sel_Hol` es la primera pantalla del juego y se ve **una vez por
+  sesión**. Después de elegir no había vuelta atrás sin reiniciar. Es el punto 9 de
+  la lista de [USERAPPI18N.md](../interpreter/USERAPPI18N.md).
+- **Solución aplicada (2026-07-26):** `L` rota el idioma en el menú de dificultad y
+  en el de fin de partida, con una fila que muestra el idioma actual. El marco se
+  reconstruye con el ancho nuevo.
+- **Nota:** `Hol::tam` son dos funciones —una pura que calcula y otra sin retorno que
+  escribe— por el fallo del tree-walker HLZ-SRP-001 registrado en zy-Serpiente: una
+  función de módulo que escribe estado y además devuelve un valor pierde la
+  escritura. `mIw/Hol.zy` recorre el ciclo completo y comprueba que vuelve al primer
+  idioma.
+
+---
+
+## HOV-I18N-008 · No hay README en tlhIngan Hol
+
+- **Archivos:** `README.md`, `README_ES.md`
+- **Descripción:** el juego responde en klingon, inglés y español, y su documentación
+  solo en inglés y español. Es el punto 14 de la lista: una aplicación multiidioma
+  cuya documentación es monolingüe está traducida a medias, y aquí el idioma que
+  falta es precisamente el idioma base del programa.
+- **Por qué queda abierto:** un README completo en tlhIngan Hol es un trabajo de
+  traducción, no de código, y escribirlo a medias es peor que no tenerlo. Queda a
+  la espera de decisión — implementar / desestimar.
+- **Nota:** el mismo hueco existe en [囲碁](../GO/AUDITORIA_I18N_ES.md), que habla
+  cinco idiomas y documenta en tres.
 
 ---
 
@@ -210,7 +255,7 @@ implementada en [囲碁](../GO/).
   actuales.
 - **La lógica no tiene texto.** `Duj.zy`, `jagh.zy` y `bach.zy` —529 líneas entre
   los tres— no contienen ni una cadena visible. Todo el trabajo se concentra en
-  `HUD.zy`.
+  `HuD.zy`.
 - **`zymbol check klingon_galaxy/hov_veS.zy` pasa limpio en v0.0.8** pese a estar
   escrito para v0.0.5: el retrofit no arranca desde una deuda de sintaxis.
 
@@ -233,7 +278,10 @@ desde el runner.
 
 - **2026-07-26** — Auditoría inicial. Cinco hallazgos abiertos.
 - **2026-07-26** — HOV-I18N-001..005 corregidos. Nuevo HOV-I18N-006 abierto (es
-  anterior a este trabajo, solo estaba sin registrar). El proyecto pasa de v0.0.5 a
+  anterior a este trabajo, solo estaba sin registrar) y **corregido el mismo día**:
+  `HUD.zy` → `HuD.zy` y las cuatro declaraciones de módulo en la transcripción de su
+  ruta. HOV-I18N-007 corregido el mismo día (cambio de idioma con `L`) y
+  HOV-I18N-008 abierto (falta el README en klingon). El proyecto pasa de v0.0.5 a
   v0.0.8. `bash mIw/Hoch.sh` → `Hoch PASS`. Dos carencias del **lenguaje** salieron a
   la luz por el camino y están en [hallazgos_es.md](hallazgos_es.md): HLZ-KL-001
   (la interpolación no admite identificadores en pIqaD).

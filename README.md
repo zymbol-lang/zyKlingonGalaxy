@@ -12,7 +12,7 @@ progression with scaling difficulty, session-persistent statistics via
 hot-definition variables, and 3-language i18n (pIqaD / English / Spanish).
 
 The i18n was first written with the locale threaded as a parameter through
-`HUD.zy` and `hov_veS.zy`, with each visible string duplicated once per language
+`HuD.zy` and `hov_veS.zy`, with each visible string duplicated once per language
 inside the render — 79 conditioned draw lines. In v0.0.8 it was rebuilt around a
 dispatcher holding the locale as module state, a catalogue of 27 domain-prefixed
 keys written in Klingon in pIqaD, and frames measured rather than typed.
@@ -59,6 +59,7 @@ in the menus. A terminal of at least 40 × 20 characters is recommended.
 | `↓` | Toggle shield (3 charges per life — absorbs enemy bolts) |
 | `P` | Pause / resume |
 | `Q` | Quit during a game |
+| `L` | Cycle language — on the difficulty and game-over screens |
 | `1`–`4` | Select difficulty directly in menu |
 | `↑` `↓` + `↵` | Navigate menus |
 
@@ -196,7 +197,7 @@ klingon_galaxy/
 ├── Duj.zy          player ship — lateral movement with boundary clamping
 ├── jagh.zy         enemy fleet — formation build, drift, dive attacks, LCG
 ├── bach.zy         projectiles — player bolts, enemy bolts, hit detection, scoring
-├── HUD.zy          display — menus, border, delta rendering, overlays
+├── HuD.zy          display — menus, border, delta rendering, overlays
 ├── juv.zy          Klingon layer over std/term (column metrics)
 ├── gho.zy          panels built from measured content — no fixed widths
 ├── Hol/
@@ -238,24 +239,46 @@ klingon_galaxy/
   advance enemy bolts, detect player hit; shield absorbs if active (consumes 1 charge);
   returns `(jagh_bachDu, HoH_Duj, escudo_activo, escudo_carga)`
 
-**`HUD.zy`** exports:
-- `sel_Hol(AN, AL)` — language selector (first screen); returns pIqaD digit
-  `𐦱` (pIqaD), `𐦲` (English), or `𐦳` (Español)
-- `menu_HeH(AN, AL, idioma)` — title screen + difficulty selector; returns ms/tick delay
+**`HuD.zy`** exports — note that **no signature carries a locale**: it lives in
+`Hol/jatlh.zy` as module state.
+- `sel_Hol(AN, AL)` — language selector (first screen). Sets the locale in
+  `Hol/jatlh` and returns its ISO 639 code; the return value is a convenience,
+  the side effect is the point
+- `menu_HeH(AN, AL)` — title screen + difficulty selector; returns ms/tick delay
 - `chen_bID(AN, AL)` — draw full border and clear playfield
-- `yIH_HUD(yIHmey, AN, AL, idioma)` — draw tribble lives in top border
-- `nob_HUD(nob, AN, idioma)` — draw score in top border
-- `HoS_label(HoS, AN, idioma)` — draw wave number in top border
-- `escudo_HUD(escudo_carga, escudo_activo, AN, idioma)` — draw shield charges in top border
+- `yIH_HuD(yIHmey, AN, AL)` — draw tribble lives in top border
+- `nob_HuD(nob, AN)` — draw score in top border
+- `HoS_label(HoS, AN)` — draw wave number in top border
+- `escudo_HuD(escudo_carga, escudo_activo, AN)` — draw shield charges in top border
   (cyan label when active; `■` filled / `·` empty per charge)
-- `ghom_HUD(ghom, AN, AL)` — draw full enemy formation (initial render)
-- `Duj_HUD(Duj, Duj_fila, AN, escudo_activo)` — draw player ship (cyan when shielded)
-- `yot(AN, AL, idioma)` — pause overlay; blocks until `P`
+- `ghom_HuD(ghom, AN, AL)` — draw full enemy formation (initial render)
+- `Duj_HuD(Duj, Duj_fila, AN, escudo_activo)` — draw player ship (cyan when shielded)
+- `yot(AN, AL)` — pause overlay; blocks until `P`
 - `Hegh_mIS(Duj, Duj_fila, AN, AL)` — death flash animation (3 pulses)
-- `HoS_tugh(ola, nob, AN, AL, idioma)` — wave-clear overlay with 1.8 s pause
-- `Hegh_nav(nob, HoS, maQDu, nob_maQ, AN, AL, idioma)` — game-over menu; returns
+- `HoS_tugh(ola, nob, AN, AL)` — wave-clear overlay with 1.8 s pause
+- `Hegh_nav(nob, HoS, maQDu, nob_maQ, AN, AL)` — game-over menu; returns
   `'n'` (new game) or `'s'` (quit)
 - `chou_bID(...)` — delta render: redraws only changed cells each tick
+
+**`Hol/jatlh.zy`** exports — the i18n dispatcher. Every locale module implements
+the same three-function contract:
+- `cher(código)` / `DaH()` — set and read the active locale (`tlh`, `en`, `es`)
+- `Holmey()` / `rInmey()` — the locale list and the master key catalogue
+- `mu'(clave)` — the translated string for a key
+- `mI'(n)` — a number in the active locale's script. Not cosmetic: Klingon
+  writes its digits in pIqaD (U+F8F0–F8F9), English and Spanish in ASCII
+- `Qaw'mu'(n)` — the "wave N cleared" sentence, composed by each locale
+
+**`juv.zy`** — a Klingon layer over `std/term`: `'ar` (display width in terminal
+columns, not graphemes), `poS` / `nIH` (pad), `botlh` (centre), `pe'` (truncate).
+
+**`gho.zy`** exports — panels built from measured content:
+- `chen(líneas, hueco)` — frame a list of already translated lines; every row
+  returned is exactly the same column count, in any language
+- `'ar(líneas)` — the widest line of a list, in terminal columns
+- `per_tlhegh(n, etiqueta, seleccionada)` — a menu row with its `►` marker
+  applied *before* measuring, so rows never shift when the cursor moves
+- `PE` / `BOTLH` — line markers: a horizontal rule, and "centre this line"
 
 ### Data model
 

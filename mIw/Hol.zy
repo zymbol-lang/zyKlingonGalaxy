@@ -102,10 +102,35 @@
     >> "" ¶
 }
 
+// Rotación del idioma. Una función de módulo que escribe estado y
+// además devuelve un valor pierde la escritura en el tree-walker
+// (HLZ-SRP-001, registrado en zy-Serpiente). Por eso `tam` es dos
+// funciones, y por eso esto se comprueba.
+//
+// EN: Locale rotation. A module function that writes state and also
+// returns a value loses the write in the tree-walker (HLZ-SRP-001),
+// which is why `tam` is two functions and why this is checked.
+>> "rotation" ¶
+ = 0
+::([1])
+@  : 1..($#) {
+    ? (::()) <> [] {
+        >> "      DRIFT  " (::()) " != " [] ¶
+         =  + 1
+    }
+    >> "  " (::()) "  " (::(".")) ¶
+    ::()
+}
+? (::()) <> [1] {
+    >> "      NO WRAP  " (::()) " != " [1] ¶
+     =  + 1
+}
+
 ::("tlh")
 
-?  == 0 &&  == 0 {
-    >> "PASS — every key resolves and every frame squares up" ¶
+>> "" ¶
+?  == 0 &&  == 0 &&  == 0 {
+    >> "PASS — keys, frames and locale rotation" ¶
 } _ {
-    >> "FAIL — "  " missing, "  " ragged rows" ¶
+    >> "FAIL — "  " missing, "  " ragged rows, "  " rotation faults" ¶
 }

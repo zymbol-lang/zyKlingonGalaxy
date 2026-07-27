@@ -13,7 +13,7 @@ con deriva y ataques de buceo, sistema dual de proyectiles, progresión de olead
 con dificultad escalonada, estadísticas de sesión persistentes mediante variables
 hot-definition, e i18n de 3 idiomas (pIqaD / Inglés / Español).
 
-La i18n se escribió primero con el idioma propagado como parámetro por `HUD.zy`
+La i18n se escribió primero con el idioma propagado como parámetro por `HuD.zy`
 y `hov_veS.zy`, y cada cadena visible duplicada una vez por idioma dentro del
 render: 79 líneas de dibujo condicionadas. En v0.0.8 se rehízo alrededor de un
 despachador que guarda el idioma como estado de módulo, un catálogo de 27 claves
@@ -63,6 +63,7 @@ caracteres.
 | `↓` | Activar/desactivar escudo (3 cargas por vida — absorbe bolts enemigos) |
 | `P` | Pausar / continuar |
 | `Q` | Salir durante la partida |
+| `L` | Cambiar de idioma — en las pantallas de dificultad y de fin de partida |
 | `1`–`4` | Seleccionar dificultad directamente en el menú |
 | `↑` `↓` + `↵` | Navegar menús |
 
@@ -203,7 +204,7 @@ klingon_galaxy/
 ├── Duj.zy          nave del jugador — movimiento lateral con límites
 ├── jagh.zy         flota enemiga — formación, deriva, ataques de buceo, LCG
 ├── bach.zy         proyectiles — bolts del jugador y enemigos, detección de impacto
-├── HUD.zy          pantalla — menús, borde, delta rendering, overlays
+├── HuD.zy          pantalla — menús, borde, delta rendering, overlays
 ├── juv.zy          capa en klingon sobre std/term (medidas de columna)
 ├── gho.zy          paneles construidos midiendo el contenido — sin anchos fijos
 ├── Hol/
@@ -245,24 +246,47 @@ klingon_galaxy/
   avanza los bolts enemigos y detecta impacto; el escudo absorbe si está activo
   (consume 1 carga); retorna `(jagh_bachDu, HoH_Duj, escudo_activo, escudo_carga)`
 
-**`HUD.zy`** exporta:
-- `sel_Hol(AN, AL)` — selector de idioma (primera pantalla); retorna dígito pIqaD
-  `𐦱` (pIqaD), `𐦲` (English), o `𐦳` (Español)
-- `menu_HeH(AN, AL, idioma)` — pantalla de título + selector de dificultad; retorna ms/tick
+**`HuD.zy`** exporta — obsérvese que **ninguna firma lleva idioma**: vive en
+`Hol/jatlh.zy` como estado de módulo.
+- `sel_Hol(AN, AL)` — selector de idioma (primera pantalla). Fija el idioma en
+  `Hol/jatlh` y devuelve su código ISO 639; el valor de retorno es una comodidad,
+  lo que importa es el efecto
+- `menu_HeH(AN, AL)` — pantalla de título + selector de dificultad; retorna ms/tick
 - `chen_bID(AN, AL)` — dibuja el borde completo y limpia el campo de juego
-- `yIH_HUD(yIHmey, AN, AL, idioma)` — dibuja las vidas (tribbles) en el borde superior
-- `nob_HUD(nob, AN, idioma)` — dibuja la puntuación en el borde superior
-- `HoS_label(HoS, AN, idioma)` — dibuja el número de oleada en el borde superior
-- `escudo_HUD(escudo_carga, escudo_activo, AN, idioma)` — dibuja las cargas de escudo en
+- `yIH_HuD(yIHmey, AN, AL)` — dibuja las vidas (tribbles) en el borde superior
+- `nob_HuD(nob, AN)` — dibuja la puntuación en el borde superior
+- `HoS_label(HoS, AN)` — dibuja el número de oleada en el borde superior
+- `escudo_HuD(escudo_carga, escudo_activo, AN)` — dibuja las cargas de escudo en
   el borde superior (etiqueta cian cuando activo; `■` lleno / `·` vacío por carga)
-- `ghom_HUD(ghom, AN, AL)` — dibuja la formación enemiga completa (render inicial)
-- `Duj_HUD(Duj, Duj_fila, AN, escudo_activo)` — dibuja la nave (cian cuando con escudo)
-- `yot(AN, AL, idioma)` — overlay de pausa; bloquea hasta que se pulse `P`
+- `ghom_HuD(ghom, AN, AL)` — dibuja la formación enemiga completa (render inicial)
+- `Duj_HuD(Duj, Duj_fila, AN, escudo_activo)` — dibuja la nave (cian cuando con escudo)
+- `yot(AN, AL)` — overlay de pausa; bloquea hasta que se pulse `P`
 - `Hegh_mIS(Duj, Duj_fila, AN, AL)` — animación de muerte (3 destellos)
-- `HoS_tugh(ola, nob, AN, AL, idioma)` — overlay de oleada completada con 1.8 s de pausa
-- `Hegh_nav(nob, HoS, maQDu, nob_maQ, AN, AL, idioma)` — menú de fin de partida; retorna
+- `HoS_tugh(ola, nob, AN, AL)` — overlay de oleada completada con 1.8 s de pausa
+- `Hegh_nav(nob, HoS, maQDu, nob_maQ, AN, AL)` — menú de fin de partida; retorna
   `'n'` (nueva partida) o `'s'` (salir)
 - `chou_bID(...)` — delta render: redibuja únicamente las celdas modificadas por tick
+
+**`Hol/jatlh.zy`** exporta — el despachador de i18n. Cada módulo de idioma cumple
+el mismo contrato de tres funciones:
+- `cher(código)` / `DaH()` — fija y lee el idioma activo (`tlh`, `en`, `es`)
+- `Holmey()` / `rInmey()` — la lista de idiomas y el catálogo maestro de claves
+- `mu'(clave)` — la cadena traducida de una clave
+- `mI'(n)` — un número en la escritura del idioma activo. No es cosmética: el
+  klingon escribe sus cifras en pIqaD (U+F8F0–F8F9) y el inglés y el español en ASCII
+- `Qaw'mu'(n)` — la frase «oleada N completada», compuesta por cada idioma
+
+**`juv.zy`** — capa en klingon sobre `std/term`: `'ar` (ancho en columnas de
+terminal, no en grafemas), `poS` / `nIH` (rellenar), `botlh` (centrar), `pe'`
+(recortar).
+
+**`gho.zy`** exporta — paneles construidos midiendo el contenido:
+- `chen(líneas, hueco)` — enmarca una lista de líneas ya traducidas; todas las
+  filas que salen miden exactamente lo mismo, en el idioma que sea
+- `'ar(líneas)` — la línea más ancha de una lista, en columnas de terminal
+- `per_tlhegh(n, etiqueta, seleccionada)` — una fila de menú con su marca `►`
+  puesta *antes* de medir, para que las filas no se muevan al mover el cursor
+- `PE` / `BOTLH` — marcas de línea: regla horizontal, y «centra esta línea»
 
 ### Modelo de datos
 

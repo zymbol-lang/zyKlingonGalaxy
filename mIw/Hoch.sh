@@ -31,33 +31,17 @@ for motor in "" "--vm"; do
 done
 
 echo "─── zymbol check"
-# HUD.zy, Duj.zy y jagh.zy declaran su nombre de módulo en pIqaD
-# mientras que sus archivos están romanizados, así que E001 salta en
-# los tres. Es anterior a este trabajo y no tiene arreglo sin
-# renombrar archivos o poner nombres latinos en un programa que no
-# los quiere: queda registrado como HOV-I18N-006 y se cuenta aparte.
-#
-# EN: HUD.zy, Duj.zy and jagh.zy declare their module name in pIqaD
-# while their files are romanized, so E001 fires on all three. It
-# predates this work and cannot be fixed without either renaming
-# files or putting Latin names into a program that does not want
-# them — recorded as HOV-I18N-006 and counted separately.
-conocidos=0
-for archivo in hov_veS.zy HUD.zy juv.zy gho.zy \
+for archivo in hov_veS.zy HuD.zy Duj.zy jagh.zy bach.zy juv.zy gho.zy \
                Hol/jatlh.zy Hol/tlhIngan.zy Hol/English.zy Hol/Español.zy; do
     if salida=$(zymbol check "$archivo" 2>&1); then
-        echo "  OK       $archivo"
-    elif [ "$(echo "$salida" | grep -c '^error')" = "1" ] && echo "$salida" | grep -q "E001"; then
-        echo "  E001     $archivo   (HOV-I18N-006, conocido)"
-        conocidos=$((conocidos + 1))
+        echo "  OK     $archivo"
     else
-        echo "  FALLA    $archivo"
+        echo "  FALLA  $archivo"
         echo "$salida"
         fallo=1
     fi
 done
 echo
-[ "$conocidos" -gt 0 ] && echo "  ($conocidos con el E001 conocido de HOV-I18N-006)" && echo
 
 if [ "$fallo" -eq 0 ]; then
     echo "Hoch PASS"

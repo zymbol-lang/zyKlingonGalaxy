@@ -6,7 +6,7 @@
 // comparte por ruta de archivo, así que cualquier módulo que
 // importe este ve la misma selección. Ninguna función de dibujo
 // lleva ya un parámetro de idioma — antes lo llevaban nueve de las
-// veinte de HUD.zy y se reenviaba desde diecisiete puntos de
+// veinte de HuD.zy y se reenviaba desde diecisiete puntos de
 // hov_veS.zy (auditoria_i18n_es.md, HOV-I18N-001).
 //
 // Las claves están en tlhIngan Hol y escritas en pIqaD, que es el
@@ -36,6 +36,7 @@
     #> {
         
         
+        
         
         
         
@@ -53,6 +54,35 @@
 
     () { _ =  }
     () { <~ _ }
+
+    // Pasa al siguiente idioma, dando la vuelta al final. Lo usan el
+    // menú de dificultad y el de fin de partida, para que el idioma
+    // se pueda cambiar sin reiniciar.
+    //
+    // Son dos funciones y no una por el fallo del tree-walker
+    // HLZ-SRP-001 (registrado en zy-Serpiente): una función de módulo
+    // que escribe estado **y** devuelve un valor con `<~` pierde la
+    // escritura en el motor por defecto. Una pura calcula, otra sin
+    // retorno escribe.
+    //
+    // EN: Advance to the next locale, wrapping around. Two functions
+    // rather than one because of tree-walker bug HLZ-SRP-001: a
+    // module function that both writes state and returns a value
+    // loses the write in the default engine.
+    _() {
+         = ()
+         = $#
+         = 0
+         = 1
+        @  <=  {
+            ? [] == _ {  =  }
+            ++
+        }
+        ?  == 0 ||  ==  {  = 0 }
+        <~ [ + 1]
+    }
+
+    () { (_()) }
 
     () {
         ?? _ {

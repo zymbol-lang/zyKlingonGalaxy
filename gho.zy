@@ -1,7 +1,7 @@
 // ============================================================
 // gho.zy — gho (aro, cerco): paneles que caben en cualquier idioma
 //
-// Un marco no se teclea: se mide. La versión anterior de HUD.zy
+// Un marco no se teclea: se mide. La versión anterior de HuD.zy
 // escribía cada fila de cada caja como un literal con el relleno
 // contado a mano, y una copia entera de la fila por idioma:
 //

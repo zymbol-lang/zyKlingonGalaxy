@@ -104,18 +104,18 @@ Number literals in code: `120` → ``, `2147483647` → `�
 | `jagh_tagh` | `_` |
 | `vIH_jagh_bachDu` | `__` |
 
-### HUD.zy exports
+### HuD.zy exports
 
 | ASCII | pIqaD |
 |-------|-------|
 | `menu_HeH` | `_` |
 | `chen_bID` | `_` |
-| `yIH_HUD` | `_` |
-| `nob_HUD` | `_` |
+| `yIH_HuD` | `_` |
+| `nob_HuD` | `_` |
 | `HoS_label` | `_` |
-| `escudo_HUD` | `c_` |
-| `ghom_HUD` | `_` |
-| `Duj_HUD` | `_` |
+| `escudo_HuD` | `c_` |
+| `ghom_HuD` | `_` |
+| `Duj_HuD` | `_` |
 | `yot` | `` |
 | `Hegh_mIS` | `_` |
 | `HoS_tugh` | `_` |
