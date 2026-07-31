@@ -1,20 +1,12 @@
 // ============================================================
-// Hol/tlhIngan.zy — tlhIngan Hol (tlh), el idioma base
-// Contrato: mu' · mI' · Qaw'mu'
-//
-// Este es el idioma en el que está escrito el programa, así que
-// esta tabla es la que despliega cada concepto en la forma en que
-// se lee. No es una función identidad: la clave . se abre
-// aquí como «nab wIv» ("elige un plan").
-//
-// EN: Hol/tlhIngan.zy — Klingon locale (tlh), the base language.
-// Interface contract: mu' · mI' · Qaw'mu'. Not an identity
-// function: keys carry a domain prefix and unfold into prose.
+//  ,  .  .  . .
+//   program .    .
+//  : "."  " " .
 // ============================================================
 
 # .Hol_tlhIngan {
 
-    #> { , ,  }
+    #> { ,  }
 
     () {
         <~ ??  {
@@ -28,7 +20,7 @@
             "."    => " "
             "."     => ""
             "."     => ""
-            "."     => "↑↓ / 1-4 / ↵ "
+            "."     => "↑↓ / - / ↵ "
             "."     => "Q =  "
 
             "."     => ""
@@ -55,37 +47,5 @@
         }
     }
 
-    // Los dígitos klingon viven en el PUA (U+F8F0–F8F9), así que un
-    // número no se puede interpolar: hay que reescribirlo cifra a
-    // cifra. Esta es la razón por la que mI' está en el contrato de
-    // los idiomas y no es una función común.
-    //
-    // EN: Klingon digits live in the PUA, so a number cannot be
-    // interpolated — it has to be rewritten digit by digit. This is
-    // why mI' is part of the locale contract rather than a shared
-    // helper.
-    () {
-        ?  == 0 { <~ "" }
-         = 
-         = ""
-        @:_ {
-            ?  == 0 { @:_! }
-             =  % 10
-             = ""
-            ?  == 1 {  = "" }
-            ?  == 2 {  = "" }
-            ?  == 3 {  = "" }
-            ?  == 4 {  = "" }
-            ?  == 5 {  = "" }
-            ?  == 6 {  = "" }
-            ?  == 7 {  = "" }
-            ?  == 8 {  = "" }
-            ?  == 9 {  = "" }
-             =  $+ 
-             =  / 10
-        }
-        <~ 
-    }
-
-    () { <~ " " $+ () $+ " " }
+    () { <~ " {} " }
 }

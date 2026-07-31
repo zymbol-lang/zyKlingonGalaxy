@@ -10,7 +10,7 @@
 
 # .Hol_English {
 
-    #> { , ,  }
+    #> { ,  }
 
     () {
         <~ ??  {
@@ -71,7 +71,6 @@
     // required an alphanumeric name and PUA glyphs are category Co, so
     // pIqaD identifiers — valid in every other position — could not be
     // interpolated. This used $++ instead. Fixed in the interpreter.
-    () { <~ "{}" }
 
     () {
         ?  == 1 { <~ "First wave cleared" }

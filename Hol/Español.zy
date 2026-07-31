@@ -22,7 +22,7 @@
 
 # .Hol_Español {
 
-    #> { , ,  }
+    #> { ,  }
 
     () {
         <~ ??  {
@@ -74,7 +74,6 @@
     // required an alphanumeric name and PUA glyphs are category Co, so
     // pIqaD identifiers — valid in every other position — could not be
     // interpolated. This used $++ instead. Fixed in the interpreter.
-    () { <~ "{}" }
 
     // El español concuerda en femenino con «oleada» y tiene forma
     // propia para la primera. Es la clase de cosa que una tabla

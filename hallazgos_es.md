@@ -302,6 +302,59 @@ resto del ecosistema, sin que haya ninguna razón de diseño para ello.
 
 ---
 
+## HLZ-KL-002 — El modo numeral `#d0d9#` es global, no «file-local» como dice la doc
+
+**Tipo:** Divergencia doc vs implementación (ambos motores coinciden entre sí)
+**Estado:** Doc corregida en `interpreter/GUIDE.md` §18b; código de este proyecto adaptado
+**Encontrado en:** `Hol/tlhIngan.zy`, al reescribir `mI'` con el sistema nativo
+
+### Síntoma
+
+Una función de módulo que activa `#⟨0⟩⟨9⟩#` para renderizar en pIqaD deja el
+modo activo **para todo el programa**: el `>>` del llamador y las demás
+funciones —incluidas las de otros idiomas— empiezan a imprimir en pIqaD.
+
+### Investigación
+
+GUIDE.md §18b afirmaba:
+
+> Mode is **file-local** — each file starts in ASCII mode.
+> Importing a module does not inherit or alter the caller's mode.
+
+La implementación no es así: `numeral_mode` es un único campo del intérprete
+(`zymbol-interpreter/src/lib.rs`) y de la VM (`zymbol-vm/src/lib.rs`), y
+`Statement::SetNumeralMode` lo escribe sin guardar ni restaurar nada en los
+límites de archivo, módulo o función.
+
+Comprobado con un módulo que activa el modo y no lo resetea: el `plain()` del
+mismo módulo y el `>> 120` del script llamador salen los dos en pIqaD, en
+tree-walker **y** en `--vm`. Los dos motores coinciden, así que no es un fallo
+de paridad: es la doc la que estaba mal.
+
+### Consecuencia práctica
+
+Un formateador de números por idioma **tiene que devolver el modo a ASCII él
+mismo**. Es lo que hace posible que `mI'` exista:
+
+```zymbol
+mI'(n) {
+    #⟨0⟩⟨9⟩#      // activa pIqaD
+    s = "{n}"     // la interpolación ya lo respeta (v0.0.8)
+    #09#          // OBLIGATORIO: devuelve ASCII al llamador
+    <~ s
+}
+```
+
+Sin la línea `#09#`, `Hol/English.zy` y `Hol/Español.zy` imprimirían sus
+números en pIqaD.
+
+### Regla práctica
+
+> `#d0d9#` no tiene ámbito. Quien lo activa dentro de una función es
+> responsable de resetearlo antes de retornar.
+
+---
+
 ## Notas generales
 
 - El mensaje `'X' is undefined — did you mean 'X°' (hot definition)?` es un falso positivo cuando `X` es una constante de módulo llamada desde una función privada: el runtime no la encontraba en el scope y sugería erróneamente hot-var. Resuelto con el fix de HLZ-002.

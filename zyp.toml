@@ -1,0 +1,10 @@
+[package]
+name = "klingon_galaxy"
+version = "0.2.0"
+engine = ">=0.0.8"
+mode = "vm"
+
+[[script]]
+name = "hov_veS"
+path = "hov_veS.zy"
+default = true
