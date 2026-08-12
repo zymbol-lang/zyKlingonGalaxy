@@ -1,0 +1,36 @@
+Hov veS — i18n
+keys: 27   locales: 3
+  [tlh]        /  OK
+  [en] English     27/27  OK
+  [es] Español     27/27  OK
+composed
+  [tlh]  ·  · 
+  [en] 0 · 7 · 1234
+  [es] 0 · 7 · 1234
+frames
+  ╭───────────────────╮
+  │          │
+  ├───────────────────┤
+  │           │
+  │     []      │
+  │   ► []     │
+  ╰───────────────────╯
+  ╭────────────────────────────╮
+  │         IKS meQtaH         │
+  ├────────────────────────────┤
+  │   Select difficulty        │
+  │     [1]  petaQ (easy)      │
+  │   ► [4]  Heghlu' (death)   │
+  ╰────────────────────────────╯
+  ╭─────────────────────────────╮
+  │         IKS meQtaH          │
+  ├─────────────────────────────┤
+  │   Elige dificultad          │
+  │     [1]  petaQ (fácil)      │
+  │   ► [4]  Heghlu' (muerte)   │
+  ╰─────────────────────────────╯
+rotation
+  tlh  
+  en  English
+  es  Español
+PASS — keys, frames and locale rotation
