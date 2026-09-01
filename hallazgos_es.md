@@ -5,6 +5,19 @@ Cada entrada incluye: síntoma, contexto, investigación, workaround y clasifica
 
 ---
 
+> **Aviso de identificadores.** `HLZ-001`, `HLZ-002` y `HLZ-003` de este documento son
+> **locales al proyecto** y **chocan con los de 囲碁** (`GO/HALLAZGOS_ES.md`), que son
+> hallazgos distintos con los mismos números. La serie que cita
+> `interpreter/CHANGELOG.md` es la de 囲碁, no esta. Un `HLZ-002` a secas es ambiguo: aquí
+> es «constantes de módulo en funciones privadas», allí «el analizador infiere Float en
+> aritmética sobre parámetros».
+>
+> Este proyecto inventó el arreglo a mitad de camino, al empezar a escribir `HLZ-KL-001`.
+> El renombrado de las tres primeras está **aplazado a propósito** —`interpreter/LDV.md`
+> § 5.2 explica por qué: es un cambio coordinado entre seis repositorios que se enlazan
+> por ID, no seis commits independientes—. Mientras tanto, **cita siempre estas tres con
+> el prefijo del proyecto en prosa ajena**: «HLZ-002 de Hov veS».
+
 ## HLZ-001 — Variables nuevas en bloques `? cond { }` no son visibles en el scope exterior
 
 **Tipo:** Bug (comportamiento inconsistente)
@@ -58,7 +71,7 @@ tipo = _tipo_fila(fila)   // asignación incondicional → visible en scope exte
 ## HLZ-002 — Constantes de módulo (`:=`) inaccesibles en funciones privadas del mismo módulo
 
 **Tipo:** Bug — scope incorrecto en llamadas intra-módulo
-**Estado:** Fix aplicado en el intérprete (`functions_lambda.rs`)
+**Estado:** **Corregido** · verificado el 2026-08-31 en los tres motores (`zytw`, `zyvm`, `zyjs` devuelven `14`). Fix en `functions_lambda.rs`; el CHANGELOG no lo atribuye a una versión concreta — el `HLZ-002` que sí figura ahí es el de 囲碁, otro hallazgo con el mismo identificador (ver la nota de colisión arriba)
 **Encontrado en:** `klingon/HuD.zy`
 
 ### Síntoma
@@ -133,7 +146,7 @@ Las constantes numéricas en `HuD.zy` se dejaron como literales por robustez y c
 ## HLZ-003 — `$+` con String como operando izquierdo falla en `--vm` con "expected Array, got String"
 
 **Tipo:** Bug — gap de cobertura en el VM (no afecta al tree-walker)
-**Estado:** Fix aplicado en el VM (`zymbol-vm/src/lib.rs`)
+**Estado:** **Corregido** · verificado el 2026-08-31: `s $+ "cd"` con String a la izquierda da `abcd` en los tres motores. Fix en `zymbol-vm/src/lib.rs`; sin atribución de versión en el CHANGELOG
 **Encontrado en:** `klingon/HuD.zy` — función privada `__()` (`int_to_piqad`)
 
 ### Síntoma
@@ -223,7 +236,7 @@ El handler ahora cubre `Array`, `Tuple` y `String`. Para String, replica la sem�
 ## HLZ-KL-001 — La interpolación `"{x}"` no admite identificadores en pIqaD
 
 **Tipo:** Gap (asimetría entre identificadores válidos y la interpolación)
-**Estado:** **Corregido en el intérprete** (2026-07-27)
+**Estado:** **Corregido en el intérprete — v0.0.8** (arreglado el 2026-07-27). CHANGELOG § 0.0.8: *«HLZ-KL-001 — string interpolation rejected identifiers the lexer accepts»*. Verificado el 2026-08-31: `f(mI') { <~ mI' }` devuelve `7` en los tres motores
 **Encontrado en:** `Hol/English.zy` y `Hol/Español.zy`, al escribir `mI'(n)`
 
 ### Síntoma
