@@ -1,5 +1,7 @@
 # Hov veS
 
+🌐 [zymbol-lang.org](https://zymbol-lang.org) · ▶ [playground](https://zymbol-lang.org/playground.html)
+
 > **Targets Zymbol v0.0.8** — revised 2026-07-26
 
 Galaxian-style space shooter for the terminal, set in the Klingon universe.

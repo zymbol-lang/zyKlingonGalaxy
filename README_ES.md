@@ -1,5 +1,7 @@
 # Hov veS
 
+🌐 [zymbol-lang.org](https://zymbol-lang.org) · ▶ [playground](https://zymbol-lang.org/playground.html)
+
 > **Apunta a Zymbol v0.0.8** — revisado el 2026-07-26
 
 Juego de tipo Galaxian para la terminal, ambientado en el universo Klingon.
