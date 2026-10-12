@@ -97,4 +97,5 @@
     >> "PASS — keys, frames and locale rotation" ¶
 } _ {
     >> "FAIL — "  " missing, "  " ragged rows, "  " rotation faults" ¶
+    <~ 1
 }
