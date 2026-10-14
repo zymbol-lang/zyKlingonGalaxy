@@ -37,7 +37,7 @@ cd "$(dirname "$0")/.."
 
 fallo=0
 
-for motor in "" "--vm"; do
+for motor in "--tw" "--vm"; do
     echo "─── mIw/Hol.zy ${motor:-tree-walker}"
     salida=$(zymbol run $motor mIw/Hol.zy 2>&1)
     estado=$?
